@@ -39,7 +39,7 @@ jobs:
         echo "IMAGE=$IMAGE" >> $GITHUB_OUTPUT
         docker build -t "$IMAGE" .
     - name: Install Trivy
-      uses: aquasecurity/trivy-action@v2
+      uses: aquasecurity/trivy-action@v0.33.0
       with:
         image-ref: ${{ env.ECR_REPO }}:${{ github.sha }}
         format: 'table'
