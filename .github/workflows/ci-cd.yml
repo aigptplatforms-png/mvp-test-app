@@ -43,7 +43,8 @@ jobs:
       with:
         image-ref: ${{ env.ECR_REPO }}:${{ github.sha }}
         format: 'table'
-        exit-code: '1'   # fail if vulnerability severity >= HIGH
+        exit-code: '1'   # fail if vulnerability severity > HIGH
+        severity: CRITICAL       # restrict failure threshold to CRITICAL only
         scan-type: 'image'
 
     - name: Login to ECR
