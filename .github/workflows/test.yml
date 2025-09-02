@@ -8,6 +8,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    
     - name: Run API tests (pytest)
       run: |
         pip install -r app/requirements.txt
