@@ -40,7 +40,7 @@ jobs:
           cd qa/ui_tests/playwright
           BASE_URL="http://18.196.175.161:8080" npx playwright test --reporter=dot,junit --output=test-results
 
-      # --- Upload reports as artifacts ---
+      # --- Upload reports as artifacts (downloadable) ---
       - name: Upload pytest report
         uses: actions/upload-artifact@v4
         with:
@@ -60,7 +60,7 @@ jobs:
         with:
           name: API Tests
           path: api-report.xml
-          reporter: junit
+          reporter: java-junit
 
       - name: Publish Playwright results
         uses: dorny/test-reporter@v1
@@ -68,4 +68,4 @@ jobs:
         with:
           name: UI Tests
           path: qa/ui_tests/playwright/test-results/*.xml
-          reporter: junit
+          reporter: java-junit
