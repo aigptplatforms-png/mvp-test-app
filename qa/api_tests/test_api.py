@@ -1,6 +1,6 @@
 import requests
 
-BASE = "http://18.196.175.161:8080")  # GitHub Actions will not substitute; in local runs set env
+BASE = "http://18.196.175.161:8080"  # GitHub Actions will not substitute; in local runs set env
 
 def test_api_hello():
     r = requests.get(f"{BASE}/api/hello", timeout=5)
