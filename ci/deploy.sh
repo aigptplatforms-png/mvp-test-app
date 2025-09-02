@@ -6,7 +6,6 @@ HOSTNAME="$2"            # e.g. app.${ELASTIC_IP}.nip.io
 
 # install docker (if not present)
 if ! command -v docker >/dev/null 2>&1; then
-  sudo apt-get update
   sudo apt-get install -y docker.io
   sudo usermod -aG docker ubuntu || true
 fi
