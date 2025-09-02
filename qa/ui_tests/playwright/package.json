@@ -1,0 +1,14 @@
+{
+  "name": "ui-tests",
+  "version": "1.0.0",
+  "description": "Playwright UI test suite",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0"
+  }
+}
