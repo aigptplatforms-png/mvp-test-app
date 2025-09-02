@@ -32,7 +32,7 @@ jobs:
       - name: Install Playwright dependencies
         run: |
           cd qa/ui_tests/playwright
-          npm ci
+          npm install
           npx playwright install --with-deps
 
       - name: Run Playwright UI tests
