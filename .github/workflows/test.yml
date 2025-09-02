@@ -8,5 +8,20 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: echo "Running tests..."
+    - name: Run API tests (pytest)
+      run: |
+        pip install -r app/requirements.txt
+        pip install pytest requests
+        pytest qa/api_tests/test_api.py --junitxml=api-report.xml
+      continue-on-error: false
+
+    - name: Run Playwright UI tests
+      uses: microsoft/playwright-github-action@v1
+      with:
+        run: |
+          cd qa/ui_tests/playwright
+          npm ci
+          npx playwright install --with-deps
+          BASE_URL="http://18.196.175.161:8080" npx playwright test --reporter=dot,junit
+
+
