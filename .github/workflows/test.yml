@@ -8,64 +8,61 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
 
-      # --- Python API tests ---
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+    # --------------------
+    # API tests (pytest)
+    # --------------------
+    - name: Run API tests (pytest)
+      run: |
+        pip install -r app/requirements.txt
+        pip install pytest requests
+        pytest qa/api_tests/test_api.py --junitxml=api-report.xml
+      continue-on-error: false
 
-      - name: Run API tests (pytest)
-        run: |
-          pip install -r app/requirements.txt
-          pip install pytest requests
-          pytest qa/api_tests/test_api.py --junitxml=api-report.xml
+    - name: Publish API results
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: API Tests
+        path: api-report.xml
+        reporter: java-junit
 
-      # --- Node + Playwright UI tests ---
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+    - name: Upload API report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: api-report
+        path: api-report.xml
 
-      - name: Install Playwright dependencies
-        run: |
-          cd qa/ui_tests/playwright
-          npm install
-          npx playwright install --with-deps
+    # --------------------
+    # Playwright tests
+    # --------------------
+    - name: Install Playwright dependencies
+      run: |
+        cd qa/ui_tests/playwright
+        npm install
+        npx playwright install --with-deps
 
-      - name: Run Playwright UI tests
-        run: |
-          cd qa/ui_tests/playwright
-          BASE_URL="http://18.196.175.161:8080" npx playwright test --reporter=dot,junit
+    - name: Run Playwright UI tests
+      run: |
+        cd qa/ui_tests/playwright
+        BASE_URL="http://18.196.175.161:8080" npx playwright test \
+          --reporter=dot,junit=playwright-report.xml \
+          --output=test-results
 
-      # --- Upload reports as artifacts (downloadable) ---
-      - name: Upload pytest report
-        uses: actions/upload-artifact@v4
-        with:
-          name: pytest-report
-          path: api-report.xml
+    - name: Publish Playwright results
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: UI Tests
+        path: qa/ui_tests/playwright/playwright-report.xml
+        reporter: java-junit
 
-      - name: Upload Playwright report
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: qa/ui_tests/playwright/test-results
-
-      # --- Publish reports in GitHub UI (Checks tab) ---
-      - name: Publish pytest results
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: API Tests
-          path: api-report.xml
-          reporter: java-junit
-
-      - name: Publish Playwright results
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: UI Tests
-          path: qa/ui_tests/playwright/test-results/*.xml
-          reporter: java-junit
+    - name: Upload Playwright report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: qa/ui_tests/playwright/playwright-report.xml
