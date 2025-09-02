@@ -49,7 +49,8 @@ jobs:
       run: |
         cd qa/ui_tests/playwright
         BASE_URL="http://18.196.175.161:8080" npx playwright test \
-          --reporter=dot,junit=playwright-report.xml \
+          --reporter=dot,junit \
+          --reporter-option junit.outputFile=playwright-report.xml \
           --output=test-results
 
     - name: Publish Playwright results
